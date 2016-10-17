@@ -1,3 +1,5 @@
+details: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
+
 # setup a systemd service on Ubuntu 15.04 and above, or upStart below Ubuntu 15.04 
 upstart
 /etc/init/docker-registry.conf
@@ -7,11 +9,32 @@ cd /etc/systemd/system/  OR  /lib/systemd/system/"
 ln -s /opt/docker-registry/systemd/docker-registry.service   docker-registry.service
 >ln -s {target-file-name } {link-name}
 
-after change file,  run `systemctl daemon-reload`
+
+
+### start the service 
+```
+root@bchen:/lib/systemd/system# systemctl enable /opt/docker-registry/systemd/docker-registry.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker-registry.service to /opt/docker-registry/systemd/docker-registry.service.
+Created symlink from /etc/systemd/system/docker-registry.service to /opt/docker-registry/systemd/docker-registry.service.
+root@bchen:/lib/systemd/system# systemctl start docker-registry.service
+root@bchen:/lib/systemd/system# systemctl status  docker-registry.service
+
+```
+
+### after change file,  run `systemctl daemon-reload`
 Warning: docker-registry.service changed on disk. Run 'systemctl daemon-reload' to reload units.
 
 
-see: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
+### remove the service
+
+```
+root@bchen:/lib/systemd/system# systemctl disable docker-registry.service
+Removed symlink /etc/systemd/system/docker-registry.service.
+Removed symlink /etc/systemd/system/multi-user.target.wants/docker-registry.service.
+```
+
+
+
 # Set up authentication
 sudo apt-get -y install apache2-utils
 >use htpasswd to create password hash 
