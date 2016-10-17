@@ -12,10 +12,14 @@ ln -s /opt/docker-registry/systemd/docker-registry.service   docker-registry.ser
 
 
 ### start the service 
+
+
 ```
 root@bchen:/lib/systemd/system# systemctl enable /opt/docker-registry/systemd/docker-registry.service
 Created symlink from /etc/systemd/system/multi-user.target.wants/docker-registry.service to /opt/docker-registry/systemd/docker-registry.service.
 Created symlink from /etc/systemd/system/docker-registry.service to /opt/docker-registry/systemd/docker-registry.service.
+
+
 root@bchen:/lib/systemd/system# systemctl start docker-registry.service
 root@bchen:/lib/systemd/system# systemctl status  docker-registry.service
 
