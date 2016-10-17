@@ -1,3 +1,10 @@
+# setup a systemd service on Ubuntu 15.04 and above, or upStart below Ubuntu 15.04 
+upstart
+/etc/init/docker-registry.conf
+systemd
+cd /etc/systemd/system/  OR  /lib/systemd/system/"
+docker-registry.service
+
 see: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
 # Set up authentication
 sudo apt-get -y install apache2-utils
