@@ -2,8 +2,14 @@
 upstart
 /etc/init/docker-registry.conf
 systemd
+
 cd /etc/systemd/system/  OR  /lib/systemd/system/"
-docker-registry.service
+ln -s /opt/docker-registry/systemd/docker-registry.service   docker-registry.service
+>ln -s {target-file-name } {link-name}
+
+after change file,  run `systemctl daemon-reload`
+Warning: docker-registry.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+
 
 see: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
 # Set up authentication
