@@ -6,8 +6,11 @@ upstart
 systemd
 
 cd /etc/systemd/system/  OR  /lib/systemd/system/"
-ln -s /opt/docker-registry/systemd/docker-registry.service   docker-registry.service
->ln -s {target-file-name } {link-name}
+ln -s /opt/docker-registry/systemd/docker-registry.service   /lib/systemd/system/docker-registry.service
+
+>by default, docker-compose is only installed in /usr/local/bin, which makes it unaccessible after sudo out
+>ln -s /usr/local/bin/docker-compose   /usr/local/sbin/docker-compose
+>ln -s {source-file-name } {target-file-name}
 
 
 
