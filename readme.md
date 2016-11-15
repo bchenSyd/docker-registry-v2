@@ -122,20 +122,11 @@ sudo service docker restart
 >Warning: You'll have to repeat this step for every machine that connects to this Docker registry! Instructions for how to do this for Ubuntu 14.04 clients are listed in Step 9 — Accessing Your Docker Registry from a Client Machine.
 
 e.g on CentOS (tested on centOS 7.2)
-
-	Install the ca-certificates package:
-
-	`yum install ca-certificates`
-
-	Enable the dynamic CA configuration feature:
-
-	`update-ca-trust force-enable`
-
-	Add it as a new file to /etc/pki/ca-trust/source/anchors/:
-
-	`cp foo.crt /etc/pki/ca-trust/source/anchors/`
-
-	`sudo update-ca-trust`  # update ca trust list
-	
-	`sudo service docker restart`
-```
+Install the ca-certificates package:
+`yum install ca-certificates`
+Enable the dynamic CA configuration feature:
+`update-ca-trust force-enable`
+Add it as a new file to /etc/pki/ca-trust/source/anchors/:
+`cp foo.crt /etc/pki/ca-trust/source/anchors/`
+`sudo update-ca-trust`  # update ca trust list	
+`sudo service docker restart`
