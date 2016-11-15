@@ -68,24 +68,29 @@ bochen2014@bchen:/opt/docker-registry/nginx$
 Since Docker currently doesn't allow you to use self-signed SSL certificates this is a bit more complicated than usual — we'll also have to set up our system to act as our own certificate signing authority.
 
 To begin, let's change to our ~/docker-registry/nginx folder and get ready to create the certificates:
-
+```
 cd ~/docker-registry/nginx
+```
 Generate a new root key:
-
+```
 openssl genrsa -out devdockerCA.key 2048
+```
 Generate a root certificate (enter whatever you'd like at the prompts):
-
+```
 openssl req -x509 -new -nodes -key devdockerCA.key -days 10000 -out devdockerCA.crt
+```
 Then generate a key for your server (this is the file referenced by ssl_certificate_key in our Nginx configuration):
-
+```
 openssl genrsa -out domain.key 2048
+```
 Now we have to make a certificate signing request.
 
 After you type this command, OpenSSL will prompt you to answer a few questions. Write whatever you'd like for the first few, but when OpenSSL prompts you to enter the "Common Name" make sure to type in the domain or IP of your server.
-
+```
 openssl req -new -key domain.key -out dev-docker-registry.com.csr
+```
 For example, if your Docker registry is going to be running on the domain www.ilovedocker.com, then your input should look like this:
-
+```
 Country Name (2 letter code) [AU]:
 State or Province Name (full name) [Some-State]:
 Locality Name (eg, city) []:
@@ -99,16 +104,18 @@ to be sent with your certificate request
 A challenge password []:
 An optional company name []:
 Do not enter a challenge password.
-
+``
 Next, we need to sign the certificate request:
-
+```
 openssl x509 -req -in dev-docker-registry.com.csr -CA devdockerCA.crt -CAkey devdockerCA.key -CAcreateserial -out domain.crt -days 10000
+```
 Since the certificates we just generated aren't verified by any known certificate authority (e.g., VeriSign), we need to tell any clients that are going to be using this Docker registry that this is a legitimate certificate. Let's do this locally on the host machine so that we can use Docker from the Docker registry server itself:
-
+```
 sudo mkdir /usr/local/share/ca-certificates/docker-dev-cert
 sudo cp devdockerCA.crt /usr/local/share/ca-certificates/docker-dev-cert
 sudo update-ca-certificates
 Restart the Docker daemon so that it picks up the changes to our certificate store:
 
 sudo service docker restart
+```
 Warning: You'll have to repeat this step for every machine that connects to this Docker registry! Instructions for how to do this for Ubuntu 14.04 clients are listed in Step 9 — Accessing Your Docker Registry from a Client Machine.
