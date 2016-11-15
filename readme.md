@@ -123,18 +123,17 @@ sudo service docker restart
 
 e.g on CentOS (tested on centOS 7.2)
 
- ```
 	Install the ca-certificates package:
 
-	yum install ca-certificates
+	`yum install ca-certificates`
 
 	Enable the dynamic CA configuration feature:
 
-	update-ca-trust force-enable
+	`update-ca-trust force-enable`
 
 	Add it as a new file to /etc/pki/ca-trust/source/anchors/:
 
-	cp foo.crt /etc/pki/ca-trust/source/anchors/	
+	`cp foo.crt /etc/pki/ca-trust/source/anchors/`
 
 	`sudo update-ca-trust`  # update ca trust list
 	
