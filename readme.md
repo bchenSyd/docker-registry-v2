@@ -67,7 +67,7 @@ bochen2014@bchen:/opt/docker-registry/nginx$
 
 Since Docker currently doesn't allow you to use self-signed SSL certificates this is a bit more complicated than usual — we'll also have to set up our system to act as our own certificate signing authority.
 
-To begin, let's change to our ~/docker-registry/nginx folder and get ready to create the certificates:
+To begin, let's change to our `~/docker-registry/nginx` folder and get ready to create the certificates:
 ```
 cd ~/docker-registry/nginx
 ```
@@ -104,7 +104,7 @@ to be sent with your certificate request
 A challenge password []:
 An optional company name []:
 Do not enter a challenge password.
-``
+```
 Next, we need to sign the certificate request:
 ```
 openssl x509 -req -in dev-docker-registry.com.csr -CA devdockerCA.crt -CAkey devdockerCA.key -CAcreateserial -out domain.crt -days 10000
@@ -114,8 +114,9 @@ Since the certificates we just generated aren't verified by any known certificat
 sudo mkdir /usr/local/share/ca-certificates/docker-dev-cert
 sudo cp devdockerCA.crt /usr/local/share/ca-certificates/docker-dev-cert
 sudo update-ca-certificates
+```
 Restart the Docker daemon so that it picks up the changes to our certificate store:
-
+```
 sudo service docker restart
 ```
-Warning: You'll have to repeat this step for every machine that connects to this Docker registry! Instructions for how to do this for Ubuntu 14.04 clients are listed in Step 9 — Accessing Your Docker Registry from a Client Machine.
+>Warning: You'll have to repeat this step for every machine that connects to this Docker registry! Instructions for how to do this for Ubuntu 14.04 clients are listed in Step 9 — Accessing Your Docker Registry from a Client Machine.
