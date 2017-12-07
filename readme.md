@@ -1,17 +1,24 @@
-details: https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
+> https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
 
-# setup a systemd service on Ubuntu 15.04 and above, or upStart below Ubuntu 15.04 
-upstart
+# setup a systemd service on Ubuntu 15.04 and above
+* upstart ( too old. deprecated )
+```
 /etc/init/docker-registry.conf
-systemd
+```
+* systemd
+```bash
+# default services
+ls /etc/systemd/
+bootchart.conf  coredump.conf  journald.conf  logind.conf  system  system.conf  user  user.conf
 
-cd /etc/systemd/system/  OR  /lib/systemd/system/"
+cd /etc/systemd/system/ # OR  /lib/systemd/system/
 ln -s /opt/docker-registry/systemd/docker-registry.service   /lib/systemd/system/docker-registry.service
-
->by default, docker-compose is only installed in /usr/local/bin, which makes it unaccessible after sudo out
->ln -s /usr/local/bin/docker-compose   /usr/local/sbin/docker-compose
->ln -s {source-file-name } {target-file-name}
-
+```
+by default, docker-compose is only installed in `/usr/local/bin`, which makes it unaccessible without sudo in. 
+```bash
+# ln -s {source-file-name } {target-file-name}
+ln -s /usr/local/bin/docker-compose   /usr/local/sbin/docker-compose
+```
 
 
 ### start the service 
