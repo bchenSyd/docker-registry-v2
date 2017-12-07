@@ -1,11 +1,27 @@
 > https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
 
 # setup a systemd service on Ubuntu 15.04 and above
-* upstart ( too old. deprecated )
+* ## upstart ( too old. deprecated )
 ```
 /etc/init/docker-registry.conf
 ```
-* systemd
+* ## systemd
+
+`service docker status` is just a syntax sugar to `systemctl status docker.service`
+```bash
+$ service docker status
+Redirecting to /bin/systemctl status docker.service
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2017-12-06 22:40:04 UTC; 1h 55min ago
+     Docs: https://docs.docker.com
+ Main PID: 843 (dockerd)
+   Memory: 59.4M
+   CGroup: /system.slice/docker.service
+           ├─843 /usr/bin/dockerd
+           └─973 docker-containerd -l unix:///var/run/docker/libcontainerd/docker-containerd.sock --metrics-interval=0
+```
+
 ```bash
 # default services
 ls /etc/systemd/
