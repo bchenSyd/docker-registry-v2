@@ -7,8 +7,6 @@ After=docker.service
 Restart=always
 TimeoutStartSec=0
 TimeoutStopSec=30
-Restart=always
-
 
 WorkingDirectory=/opt/docker-registry
 ExecStartPre=-/usr/local/bin/docker-compose down  

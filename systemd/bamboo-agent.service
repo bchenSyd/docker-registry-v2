@@ -3,13 +3,7 @@ Description=Atlassian Bamboo Agent
 After=syslog.target network.target
 
 [Service]
-# If you have a choice then use Type=simple for your systemd services. 
-# It is simpler and systemd will take care or proper process deamonizing, restarts and shutdowns.
-
-# Type=forking is for historical services that cannot be run in foreground. 
-# In this case process itself will take care of its deamonizing, but systemd should know the child pid somehow 
-# so you need to provide PIDFile= option as well.
-Type=forking
+Type=forking # forking v.s simple, see ./simple v.s fork.md
 User=bo.chen
 Group=bo.chen
 Restart=always
