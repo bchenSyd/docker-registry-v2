@@ -39,6 +39,7 @@ WantedBy=multi-user.target
 ```
 
 ## difference
+with `Type=forking`, you tell systemd that you are a daemon and you will fork youself;
 The difference is in the way the dependencies are handled. If some other services depend on `my_service`, then, in the first example, systemd will be able to run them as soon as it starts `my_service`. In the second example, systemd will wait until `my_service` forks. The difference matters, because `my_service` creates its control socket after starting, but before forking. So, in the first example, there is some chance that systemd will start something that tries to connect to the socket before `my_service` creates it.
 
 

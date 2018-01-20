@@ -3,6 +3,7 @@ Description=Atlassian Bamboo Agent
 After=syslog.target network.target
 
 [Service]
+# systemd expect you to be a daemon (you fork yourself)
 Type=forking # forking v.s simple, see ./simple v.s fork.md
 User=bo.chen
 Group=bo.chen
