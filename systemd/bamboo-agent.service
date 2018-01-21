@@ -15,4 +15,10 @@ ExecStart=/bamboo/bin/bamboo-agent.sh start
 ExecStop=/bamboo/bin/bamboo-agent.sh stop
 
 [Install]
-WantedBy=multi-user.target
+# want v.s wantedBy 
+# The difference is that this directive is included in the ancillary unit (i.e. the dependent), 
+#  allowing the primary unit (the depending) listed to remain relatively clean.  
+# if A depneds on B, you either add want=B in A.service , which is a dirty solution, 
+#or add wanted=A in B.service which is much cleaner. Here B is called a ancillary unit
+WantedBy=multi-user.target  # ls /etc/systemd/system/multi-user.target.wants/
+
