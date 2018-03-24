@@ -1,0 +1,1 @@
+https://github.com/verdaccio/verdaccio/issues/336#issuecomment-375868520
