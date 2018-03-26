@@ -1,11 +1,14 @@
 > https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
 
-# setup a systemd service on Ubuntu 15.04 and above
-* ## upstart ( too old. deprecated )
+
+*nginx as reverse proxy to handle authentication; registry:2 as the real docker registry server*
+
+### setup a systemd service on Ubuntu 15.04 and above
+* #### upstart ( too old. deprecated )
 ```
 /etc/init/docker-registry.conf
 ```
-* ## systemd
+* #### systemd
 
 `service docker status` is just a syntax sugar to `systemctl status docker.service`
 ```bash
@@ -37,7 +40,7 @@ ln -s /usr/local/bin/docker-compose   /usr/local/sbin/docker-compose
 ```
 
 
-### start the service 
+#### start the service 
 
 
 ```
@@ -51,11 +54,11 @@ root@bchen:/lib/systemd/system# systemctl status  docker-registry.service
 
 ```
 
-### after change file,  run `systemctl daemon-reload`
+#### after change file,  run `systemctl daemon-reload`
 Warning: docker-registry.service changed on disk. Run 'systemctl daemon-reload' to reload units.
 
 
-### remove the service
+#### remove the service
 
 ```
 root@bchen:/lib/systemd/system# systemctl disable docker-registry.service
@@ -65,16 +68,16 @@ Removed symlink /etc/systemd/system/multi-user.target.wants/docker-registry.serv
 
 
 
-# Set up authentication
-sudo apt-get -y install apache2-utils
+### Set up authentication
+`sudo apt-get -y install apache2-utils`
 >use htpasswd to create password hash 
-cd ~/docker-registry/nginx
-`htpasswd -c registry.password bo`
-without `-c`  ( c for create)
-`htpasswd  registry.password bo`
 
----
-bochen2014@bchen:/opt/docker-registry/nginx$ curl http://localhost:5043/v2/
+1. `cd ~/docker-registry/nginx`
+2. `htpasswd -c registry.password bo` 
+3. `htpasswd  registry.password bo` to check (without `-c` , c for create)
+
+```
+>  curl http://localhost:5043/v2/
 <html>
 <head><title>401 Authorization Required</title></head>
 <body bgcolor="white">
@@ -85,6 +88,7 @@ bochen2014@bchen:/opt/docker-registry/nginx$ curl http://localhost:5043/v2/
 bochen2014@bchen:/opt/docker-registry/nginx$ curl http://bo:bo@localhost:5043/v2/
 {}
 bochen2014@bchen:/opt/docker-registry/nginx$ 
+```
 
 # Signing Your Own Certificate
 
