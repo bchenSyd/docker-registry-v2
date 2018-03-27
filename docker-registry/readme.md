@@ -146,7 +146,8 @@ Restart the Docker daemon so that it picks up the changes to our certificate sto
 
 >Warning: You'll have to repeat this step for every machine that connects to this Docker registry! Instructions for how to do this for Ubuntu 14.04 clients are listed in Step 9 — Accessing Your Docker Registry from a Client Machine.
 
-e.g on CentOS (tested on centOS 7.2)
+e.g 
+#### on CentOS (tested on centOS 7.2)
 1. Install the ca-certificates package:
 `yum install ca-certificates`
 2. Enable the dynamic CA configuration feature:
@@ -156,18 +157,31 @@ e.g on CentOS (tested on centOS 7.2)
   3.2 `sudo update-ca-trust`  to update ca trust list    
   3.3 `sudo service docker restart`
 
-on docker-toolbox
+#### on docker-toolbox
 1. `openssl s_client -connect examle.com.au:443 -showcerts` and save `cert-1.crt` and `cert-2.crt` (certification chain)
-2. the boot2docker VM only has access to  your %HOME% by default. if you need to add more shared folders, you need to configure as you normally do on vbox (`c:\Workspace`->/c/Workspace)
-3. boot2docker VM doesn't matain state. all you changes are gone after reboot
-4. `docker-machine ssh default` to ssh to that vm
+2. the `boot2docker` VM only has access to  your `%HOME%` by default. if you need to add more shared folders, you need to configure as you normally do on vbox (`c:\Workspace`->/c/Workspace)
+3. NOTE: `boot2docker` VM doesn't matain state. all you changes are gone after reboot. 
+   > https://github.com/boot2docker/boot2docker#installing-secure-registry-certificates
+
+    verified👌
+```bash
+docker-machine scp certfile default:ca.crt # https://github.com/docker/machine/pull/4388
+docker-machine ssh default
+sudo mv ~/ca.crt /etc/docker/certs.d/examle.com.au:8080/ca.crt
+exit
+docker-machine restart
 ```
-    sudo -i
-    cd /usr/local/share/ca-certificates
-    mkdir artifactory && cd artifactory
-    cp /c/Workspace/cert-* .
-    update-ca-certificates
-    /etc/init.d/docker restart
+
+[deprecated] Alternatively, (verified 👌)   
+```bash
+sudo -i
+# /usr/local won't be persisted, as boot2docker won't persit files
+#  /etc/docker/certs.d/example.com.au:8080/ is the correct target
+cd /usr/local/share/ca-certificates # cd /etc/docker/certs.d/example.com.au:8080/ 
+mkdir artifactory && cd artifactory
+cp /c/Workspace/cert-* .
+update-ca-certificates
+/etc/init.d/docker restart
 ```
-5. docker pull example.com.au/your-image:latest
+4. docker pull example.com.au:8080/your-image:latest
 
