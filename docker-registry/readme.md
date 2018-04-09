@@ -3,6 +3,11 @@
 
 *nginx as reverse proxy to handle authentication; registry:2 as the real docker registry server*
 
+codeplane.com:80 --->  nginx reverse proxy to codeplane.com:3000  ----> ssh tunnel <=======>  localhost:3000
+see [nginx ssh tunnel](https://gist.github.com/fnando/1101211)
+
+
+
 ### setup a systemd service on Ubuntu 15.04 and above
 * #### upstart ( too old. deprecated )
 ```
