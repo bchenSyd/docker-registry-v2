@@ -1,13 +1,10 @@
 > https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-14-04
 
 
-*nginx as reverse proxy to handle authentication; registry:2 as the real docker registry server*
+*nginx as reverse proxy to handle authentication; docker-registry:5000 is the real server*
 
 ### setup a systemd service on Ubuntu 15.04 and above
-* #### upstart ( too old. deprecated )
-```
-/etc/init/docker-registry.conf
-```
+
 * #### systemd
 
 `service docker status` is just a syntax sugar to `systemctl status docker.service`
@@ -146,7 +143,7 @@ Restart the Docker daemon so that it picks up the changes to our certificate sto
 
 >Warning: You'll have to repeat this step for every machine that connects to this Docker registry! Instructions for how to do this for Ubuntu 14.04 clients are listed in Step 9 — Accessing Your Docker Registry from a Client Machine.
 
-e.g 
+Here are the examples tested on centos and tool-box;
 #### on CentOS (tested on centOS 7.2)
 1. Install the ca-certificates package:
 `yum install ca-certificates`
@@ -163,7 +160,21 @@ e.g
 3. NOTE: `boot2docker` VM doesn't matain state. all you changes are gone after reboot. 
    > https://github.com/boot2docker/boot2docker#installing-secure-registry-certificates
 
-    verified👌
+
+[deprecated] Normally, your trusted CA are stored at `/usr/local/share`, so you need to add the cr file there (verified 👌)   
+```bash
+sudo -i
+# /usr/local won't be persisted, as boot2docker won't persit files (Core Linux, Core OS)
+#  /etc/docker/certs.d/example.com.au:8080/ is the correct target
+cd /usr/local/share/ca-certificates # cd /etc/docker/certs.d/example.com.au:8080/ 
+mkdir artifactory && cd artifactory
+cp /c/Workspace/cert-* .
+update-ca-certificates
+/etc/init.d/docker restart
+```
+
+but since `docker-toolbox` runs on memory only os (Core linux), it can't persist your file.   verified👌
+
 ```bash
 docker-machine scp certfile default:ca.crt # https://github.com/docker/machine/pull/4388
 docker-machine ssh default
@@ -172,16 +183,7 @@ exit
 docker-machine restart
 ```
 
-[deprecated] Alternatively, (verified 👌)   
-```bash
-sudo -i
-# /usr/local won't be persisted, as boot2docker won't persit files
-#  /etc/docker/certs.d/example.com.au:8080/ is the correct target
-cd /usr/local/share/ca-certificates # cd /etc/docker/certs.d/example.com.au:8080/ 
-mkdir artifactory && cd artifactory
-cp /c/Workspace/cert-* .
-update-ca-certificates
-/etc/init.d/docker restart
+
 ```
 4. docker pull example.com.au:8080/your-image:latest
 
