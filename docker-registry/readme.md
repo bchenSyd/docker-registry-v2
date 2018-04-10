@@ -98,21 +98,18 @@ bochen2014@bchen:/opt/docker-registry/nginx$
 
 Since Docker currently doesn't allow you to use self-signed SSL certificates this is a bit more complicated than usual — we'll also have to set up our system to act as our own certificate signing authority.
 
-1. To begin, let's change to our `~/docker-registry/nginx` folder and get ready to create the certificates:
-  1. `cd ~/docker-registry/nginx`
-  2. Generate a new root key: `openssl genrsa -out devdockerCA.key 2048`
-  3. Generate a root certificate (enter whatever you'd like at the prompts):  
-  `openssl req -x509 -new -nodes -key devdockerCA.key -days 10000 -out devdockerCA.crt`
-  4. Then generate a key for your server (this is the file referenced by `ssl_certificate_key` in `/ect/nginx/config.d/registry.conf`):
-  `openssl genrsa -out domain.key 2048`
-
-2.  Now we have to make a certificate signing request.
-
+1. `cd ~/docker-registry/nginx`
+2. Generate a new root key: `openssl genrsa -out devdockerCA.key 2048`
+3. Generate a root certificate (enter whatever you'd like at the prompts):  
+`openssl req -x509 -new -nodes -key devdockerCA.key -days 10000 -out devdockerCA.crt`
+4. Then generate a key for your server (this is the file referenced by `ssl_certificate_key` in `/ect/nginx/config.d/registry.conf`):
+`openssl genrsa -out domain.key 2048`
+5.  Now we have to make a certificate signing request.
 `openssl req -new -key domain.key -out dev-docker-registry.com.csr`
 After you type this command, OpenSSL will prompt you to answer a few questions. Write whatever you'd like for the first few, but when OpenSSL prompts you to enter the "Common Name" make sure to type in the domain or IP of your server.
 
 For example, if your Docker registry is going to be running on the domain `www.example.com`, then your input should look like this:
-```
+```sh
 Country Name (2 letter code) [AU]:
 State or Province Name (full name) [Some-State]:
 Locality Name (eg, city) []:
@@ -127,11 +124,10 @@ A challenge password []:
 An optional company name []:
 Do not enter a challenge password.
 ```
-
-Next, we need to sign the certificate request:
+6. sign the certificate request:
 `openssl x509 -req -in dev-docker-registry.com.csr -CA devdockerCA.crt -CAkey devdockerCA.key -CAcreateserial -out domain.crt -days 10000`
 
-
+by now, you have both `domain.crt` and `domain.key` generated;
 
 #### Registry Client (docker daemon): Trust the certicifcate
 
