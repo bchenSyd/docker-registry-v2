@@ -101,7 +101,7 @@ Since Docker currently doesn't allow you to use self-signed SSL certificates thi
 1. `cd ~/docker-registry/nginx`
 2. Generate a new root key: `openssl genrsa -out devdockerCA.key 2048`
 3. Generate a root certificate (enter whatever you'd like at the prompts):  
-`openssl req -x509 -new -nodes -key devdockerCA.key -days 10000 -out devdockerCA.crt`
+`openssl req -x509 -new -nodes -key devdockerCA.key -days 10000 -out devdockerCA.crt` (the crt here is x509 which is PEM essentially; DER is binary format; crt could be either binary DER or ascII PEM ---BEGIN )
 4. Then generate a key for your server (this is the file referenced by `ssl_certificate_key` in `/ect/nginx/config.d/registry.conf`):
 `openssl genrsa -out domain.key 2048`
 5.  Now we have to make a certificate signing request.
@@ -120,15 +120,32 @@ Email Address []:
 
 Please enter the following 'extra' attributes
 to be sent with your certificate request
+# Do not enter a challenge password.
 A challenge password []:
 An optional company name []:
-Do not enter a challenge password.
+
 ```
 6. sign the certificate request:
 `openssl x509 -req -in dev-docker-registry.com.csr -CA devdockerCA.crt -CAkey devdockerCA.key -CAcreateserial -out domain.crt -days 10000`
 
 by now, you have both `domain.crt` and `domain.key` generated;
 
+```sh
+server {
+  listen 443;
+  server_name registry.bambora.co.nz;
+
+  # SSL
+  ssl on;
+  ssl_certificate /etc/nginx/conf.d/domain.crt;
+  ssl_certificate_key /etc/nginx/conf.d/domain.key;
+
+  location /api/ {
+     root /usr/share/nginx/html;
+     index index.html index.htm;
+  }
+}  
+```
 #### Registry Client (docker daemon): Trust the certicifcate
 
 Since the certificates we just generated aren't verified by any known certificate authority (e.g., VeriSign), we need to tell any clients that are going to be using this Docker registry that this is a legitimate certificate. Let's do this locally on the host machine so that we can use Docker from the Docker registry server itself:
