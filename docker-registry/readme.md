@@ -11,7 +11,9 @@ see [nginx ssh tunnel](https://gist.github.com/fnando/1101211)
 ### setup a systemd service on Ubuntu 15.04 and above
 
 #### upstart
-`service service-name command` , too old;
+`service service-name command` , got abandoned in 9th Mar 2015 (Ubuntu 15.04)
+> http://www.theregister.co.uk/2015/03/07/ubuntu_to_switch_to_systemd/
+init is really old stuff
 
 #### systemd
 `systemctl status docker.service`
