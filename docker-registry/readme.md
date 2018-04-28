@@ -10,9 +10,11 @@ see [nginx ssh tunnel](https://gist.github.com/fnando/1101211)
 
 ### setup a systemd service on Ubuntu 15.04 and above
 
-* #### systemd
+#### upstart
+`service service-name command` , too old;
 
-`service docker status` is just a syntax sugar to `systemctl status docker.service`
+#### systemd
+`systemctl status docker.service`
 ```bash
 $ service docker status
 Redirecting to /bin/systemctl status docker.service
