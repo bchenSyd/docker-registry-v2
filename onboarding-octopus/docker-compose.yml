@@ -1,0 +1,11 @@
+version: '2'
+services:
+    onboarding-frontend:
+        container_name: onboarding-prod-1.0
+        labels:
+            com.bambora.version: "prod-1.0"
+            com.bambora.releaseNote: "onboarding production 1.0"
+        build: .
+        image: onboarding:prod-1.0
+        ports:
+            - 8000:80
