@@ -3,11 +3,20 @@
 
 *nginx as reverse proxy to handle authentication; docker-registry:5000 is the real server*
 
+codeplane.com:80 --->  nginx reverse proxy to codeplane.com:3000  ----> ssh tunnel <=======>  localhost:3000
+see [nginx ssh tunnel](https://gist.github.com/fnando/1101211)
+
+
+
 ### setup a systemd service on Ubuntu 15.04 and above
 
-* #### systemd
+#### upstart
+`service service-name command` , got abandoned in 9th Mar 2015 (Ubuntu 15.04)
+> http://www.theregister.co.uk/2015/03/07/ubuntu_to_switch_to_systemd/
+init is really old stuff
 
-`service docker status` is just a syntax sugar to `systemctl status docker.service`
+#### systemd
+`systemctl status docker.service`
 ```bash
 $ service docker status
 Redirecting to /bin/systemctl status docker.service
@@ -93,21 +102,18 @@ bochen2014@bchen:/opt/docker-registry/nginx$
 
 Since Docker currently doesn't allow you to use self-signed SSL certificates this is a bit more complicated than usual — we'll also have to set up our system to act as our own certificate signing authority.
 
-1. To begin, let's change to our `~/docker-registry/nginx` folder and get ready to create the certificates:
-  1. `cd ~/docker-registry/nginx`
-  2. Generate a new root key: `openssl genrsa -out devdockerCA.key 2048`
-  3. Generate a root certificate (enter whatever you'd like at the prompts):  
-  `openssl req -x509 -new -nodes -key devdockerCA.key -days 10000 -out devdockerCA.crt`
-  4. Then generate a key for your server (this is the file referenced by `ssl_certificate_key` in `/ect/nginx/config.d/registry.conf`):
-  `openssl genrsa -out domain.key 2048`
-
-2.  Now we have to make a certificate signing request.
-
+1. `cd ~/docker-registry/nginx`
+2. Generate a new root key: `openssl genrsa -out devdockerCA.key 2048`
+3. Generate a root certificate (enter whatever you'd like at the prompts):  
+`openssl req -x509 -new -nodes -key devdockerCA.key -days 10000 -out devdockerCA.crt` (the crt here is x509 which is PEM essentially; DER is binary format; crt could be either binary DER or ascII PEM ---BEGIN )
+4. Then generate a key for your server (this is the file referenced by `ssl_certificate_key` in `/ect/nginx/config.d/registry.conf`):
+`openssl genrsa -out domain.key 2048`
+5.  Now we have to make a certificate signing request.
 `openssl req -new -key domain.key -out dev-docker-registry.com.csr`
 After you type this command, OpenSSL will prompt you to answer a few questions. Write whatever you'd like for the first few, but when OpenSSL prompts you to enter the "Common Name" make sure to type in the domain or IP of your server.
 
 For example, if your Docker registry is going to be running on the domain `www.example.com`, then your input should look like this:
-```
+```sh
 Country Name (2 letter code) [AU]:
 State or Province Name (full name) [Some-State]:
 Locality Name (eg, city) []:
@@ -118,16 +124,32 @@ Email Address []:
 
 Please enter the following 'extra' attributes
 to be sent with your certificate request
+# Do not enter a challenge password.
 A challenge password []:
 An optional company name []:
-Do not enter a challenge password.
-```
 
-Next, we need to sign the certificate request:
+```
+6. sign the certificate request:
 `openssl x509 -req -in dev-docker-registry.com.csr -CA devdockerCA.crt -CAkey devdockerCA.key -CAcreateserial -out domain.crt -days 10000`
 
+by now, you have both `domain.crt` and `domain.key` generated;
 
+```sh
+server {
+  listen 443;
+  server_name registry.bambora.co.nz;
 
+  # SSL
+  ssl on;
+  ssl_certificate /etc/nginx/conf.d/domain.crt;
+  ssl_certificate_key /etc/nginx/conf.d/domain.key;
+
+  location /api/ {
+     root /usr/share/nginx/html;
+     index index.html index.htm;
+  }
+}  
+```
 #### Registry Client (docker daemon): Trust the certicifcate
 
 Since the certificates we just generated aren't verified by any known certificate authority (e.g., VeriSign), we need to tell any clients that are going to be using this Docker registry that this is a legitimate certificate. Let's do this locally on the host machine so that we can use Docker from the Docker registry server itself:
