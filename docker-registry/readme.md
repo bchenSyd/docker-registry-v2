@@ -48,17 +48,26 @@ ln -s /usr/local/bin/docker-compose   /usr/local/sbin/docker-compose
 
 #### start the service 
 
-
-```
-root@bchen:/lib/systemd/system# systemctl enable /opt/docker-registry/systemd/docker-registry.service
+```sh
+`systemctl enable /opt/docker-registry/systemd/docker-registry.service`
 Created symlink from /etc/systemd/system/multi-user.target.wants/docker-registry.service to /opt/docker-registry/systemd/docker-registry.service.
 Created symlink from /etc/systemd/system/docker-registry.service to /opt/docker-registry/systemd/docker-registry.service.
 
 
-root@bchen:/lib/systemd/system# systemctl start docker-registry.service
-root@bchen:/lib/systemd/system# systemctl status  docker-registry.service
+`systemctl start docker-registry.service`
+`systemctl status  docker-registry.service`
 
-```
+after change file, run `systemctl daemon-reload`
+
+Warning: docker-registry.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+
+remove the service
+
+`systemctl disable docker-registry.service`
+Removed symlink /etc/systemd/system/docker-registry.service.
+Removed symlink /etc/systemd/system/multi-user.target.wants/docker-registry.service.
+```	
+
 
 #### after change file,  run `systemctl daemon-reload`
 Warning: docker-registry.service changed on disk. Run 'systemctl daemon-reload' to reload units.
